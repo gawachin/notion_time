@@ -22,32 +22,50 @@
       font-family: serif;
     }
 
-    /* 天気パネル（縦の余白を削ってコンパクト化） */
+    /* 天気パネル */
     .weather-container {
       background: rgba(255, 255, 255, 0.15); 
       backdrop-filter: blur(12px);           
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 24px;   
-      padding: 25px 50px; /* 上下40pxから25pxへ縮小 */
+      padding: 25px 50px; 
       text-align: center;
       color: white; 
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
       width: 380px; 
     }
 
-    /* 冒頭のヘッダー部分（余白を削減） */
+    /* 冒頭のヘッダー部分 */
     .header {
-      margin-bottom: 12px;
+      margin-bottom: 15px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-      padding-bottom: 10px;
+      padding-bottom: 12px;
     }
 
+    /* 日付・時間・住所を縦並びにする設定 */
     .subtitle {
-      font-size: 1.1rem; /* タイトル代わりに少しサイズアップ */
       letter-spacing: 1.5px;
-      opacity: 0.9;
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 6px; /* 各行の隙間 */
+    }
+
+    #date-str {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    #time-str {
+      font-size: 1.4rem; /* 時間を少し大きく強調 */
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .location-str {
+      font-size: 0.95rem;
+      opacity: 0.9;
     }
 
     /* 3列×3行のグリッド */
@@ -55,13 +73,13 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
-      gap: 10px; /* 隙間を15pxから10pxへ詰める */
+      gap: 10px; 
     }
 
     .forecast-item {
       background: rgba(255, 255, 255, 0.1); 
       border-radius: 12px;
-      padding: 8px 0; /* 上下の余白を詰める */
+      padding: 8px 0; 
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -69,7 +87,7 @@
       text-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
 
-    /* グリッド内のテキストサイズと余白調整 */
+    /* グリッド内のテキストサイズ */
     .time { font-size: 0.9rem; margin-bottom: 4px; opacity: 0.9; letter-spacing: 1px; }
     .icon { font-size: 1.6rem; line-height: 1; margin-bottom: 4px; }
     .temp { font-size: 1.05rem; font-weight: normal; margin-bottom: 2px; }
@@ -79,9 +97,13 @@
 <body>
 
   <div class="weather-container">
-    <!-- ヘッダー部分 (Today's Forecastを削除) -->
+    <!-- ヘッダー部分 (日付・時間・住所をそれぞれ改行) -->
     <div class="header">
-      <div class="subtitle"><span id="date-str"></span> | Hino, Tokyo</div>
+      <div class="subtitle">
+        <div id="date-str"></div>
+        <div id="time-str"></div>
+        <div class="location-str">Hino, Tokyo</div>
+      </div>
     </div>
     
     <!-- 天気グリッド部分 -->
@@ -91,6 +113,32 @@
   </div>
 
   <script>
+    // ------------------------------------
+    // 日付と時間を1秒ごとに更新する処理
+    // ------------------------------------
+    function updateTime() {
+      const now = new Date();
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const dayOfWeek = days[now.getDay()];
+
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      document.getElementById('date-str').innerText = `${year}.${month}.${day} (${dayOfWeek})`;
+      document.getElementById('time-str').innerText = `${hours}:${minutes}:${seconds}`;
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // ------------------------------------
+    // 天気予報を取得する処理
+    // ------------------------------------
     const lat = 35.6785;
     const lon = 139.3940;
     const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,weathercode&timezone=Asia%2FTokyo&forecast_days=2`;
@@ -123,15 +171,6 @@
         const data = await res.json();
         const hourly = data.hourly;
 
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const dayOfWeek = days[now.getDay()];
-        
-        document.getElementById('date-str').innerText = `${year}.${month}.${day} (${dayOfWeek})`;
-
         const container = document.getElementById('forecast');
         container.innerHTML = '';
 
@@ -147,7 +186,6 @@
           const item = document.createElement('div');
           item.className = 'forecast-item';
           
-          // 💧アイコンを削除し、気温と降水量をすっきり表示
           item.innerHTML = `
             <div class="time">${timeLabel}</div>
             <div class="icon" title="${info.text}">${info.icon}</div>
