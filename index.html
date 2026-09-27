@@ -13,44 +13,41 @@
       justify-content: center;
       align-items: center;
       
-      /* 背景画像の設定 */
+      /* 背景画像の設定をocean.jpgに変更 */
       background-image: url('ocean.jpg');
-      background-size: cover;       /* 画面全体に画像を広げる */
-      background-position: center;  /* 画像の中央を表示 */
-      background-repeat: no-repeat; /* 画像の繰り返しを防ぐ */
+      background-size: cover;       
+      background-position: center;  
+      background-repeat: no-repeat; 
       
       overflow: hidden;
-      
-      /* フォントを明朝体（serif）に設定 */
       font-family: serif;
     }
 
-    /* 時計パネル（すりガラス風） */
+    /* 時計パネル（すりガラス風） - 全体的に約0.7倍へ縮小 */
     .clock-container {
-      background: rgba(255, 255, 255, 0.15); /* 背景を少しだけ透過 */
-      backdrop-filter: blur(12px);           /* すりガラス効果 */
+      background: rgba(255, 255, 255, 0.15); 
+      backdrop-filter: blur(12px);           
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 24px;
-      padding: 40px 60px;
+      border-radius: 17px; /* 24pxから縮小 */
+      padding: 28px 42px;  /* 40px 60pxから縮小 */
       text-align: center;
-      color: white; /* 文字色を白に設定 */
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+      color: white; 
+      box-shadow: 0 6px 22px 0 rgba(0, 0, 0, 0.2); /* 影も少し小さく調整 */
     }
 
     #time {
-      font-size: 4.5rem;
+      font-size: 3.15rem; /* 4.5remから縮小 */
       font-weight: normal; 
-      letter-spacing: 4px;
+      letter-spacing: 3px; /* 4pxから縮小 */
       margin: 0;
-      /* 画像と同化しないように文字に少し影をつける */
       text-shadow: 0 2px 5px rgba(0,0,0,0.6); 
     }
 
     #date {
-      font-size: 1.2rem;
-      margin-top: 10px;
-      letter-spacing: 2px;
+      font-size: 0.85rem; /* 1.2remから縮小 */
+      margin-top: 7px;    /* 10pxから縮小 */
+      letter-spacing: 1.5px; /* 2pxから縮小 */
       opacity: 0.9;
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
     }
